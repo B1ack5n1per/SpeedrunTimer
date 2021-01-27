@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Speedrun Timer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"></script>
+    <script src="main.js" charset="utf-8"></script>
+    <input id="file-loader" type="file" name="" value="">
+    <div id="container">
+      <div id="controls">
+        <button class="button" id="load">Load Splits</button>
+        <button class="button" id="download">Save Splits</button>
+        <button class="button" id="new">Create New Splits</button>
+        Press space to start/split.
+      </div>
+      <div id="split-wrapper">
+        <center>
+          <h1 id="title"></h1>
+          <h3 id="category"></h3>
+        </center>
+        <ul id="splits" >
+
+        </ul>
+        <center>
+          <div id="run-data">
+            <h1 id="time">0:00:00:000</h1>
+            <p id="best-possible">Best Possible: <span id="bp"></span></p>
+            <p id="sum-of-best">Sum of Best Segments: <span id="sb"></span></p>
+          </div>
+        </center>
+      </div>
+    </div>
+    <div id="spinner"></div>
+  </body>
+</html>

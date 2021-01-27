@@ -1,0 +1,13 @@
+{
+  "game": "Call of Duty Black Ops III Zombies",
+  "category": "My Brother's Keeper Classic GobbleGums",
+  "splits": [{
+    "name": "Obtain Bow",
+    "pb": 231,
+    "best": 231
+  }, {
+    "name": "Teleport",
+    "pb": 546,
+    "best": 315
+  }]
+}
