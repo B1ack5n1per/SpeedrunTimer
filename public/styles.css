@@ -16,6 +16,7 @@ body {
   font-size: 1.5rem;
   outline: none;
   border: none;
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(228,228,228,1) 17%, rgba(255,255,255,1) 100%);
 }
 
 .error {
