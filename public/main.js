@@ -90,7 +90,14 @@ class Time {
     return (addSign ? (this.isNegative ? '-' : '+') : '') + this.s + '.' + Math.floor(this.ms / 100);
   }
 };
-let splitData;
+class SplitData {
+  constructor() {
+    this.game = 'Game';
+    this.category = 'Category';
+    this.splits = [{ name: '1st Split', pb: 0, best: 0 }];
+  }
+}
+let splitData = new SplitData();
 let categorySelection = false;
 let running = false;
 let time = new Time();
@@ -112,18 +119,24 @@ function download(filename, contents) {
 function createSplit(split) {
   let li = document.createElement('li');
   let data = document.createElement('div');
-  let name = document.createElement('h2');
+  let name = document.createElement('div');
+  let nameMsg = document.createElement('h2');
   let best = document.createElement('h3');
   let timer = document.createElement('div');
+  let button = document.createElement('i');
 
   li.className = 'split';
   data.className = 'split-data';
   name.className = 'split-name';
-  name.innerHTML = split.name;
+  nameMsg.className = 'msg-target';
+  nameMsg.innerHTML = split.name;
+  button.className = 'fas fa-pencil-alt split-edit';
   best.className = 'split-best';
   best.innerHTML = 'PB Time: ' + (split.pb > 0 ? new Time(split.pb).toString(false): '-');
   timer.className = 'time';
 
+  name.appendChild(nameMsg);
+  name.appendChild(button);
   data.appendChild(name);
   data.appendChild(best);
   li.appendChild(data);
@@ -131,7 +144,13 @@ function createSplit(split) {
 
   return li;
 }
+
 function updateSplits() {
+  console.log(splitData);
+  $('#title .msg-target').html(splitData.game);
+  $('#category .msg-target').html(splitData.category);
+  time = new Time();
+  $('#time').html(time.toString(true));
   $('#splits').html('');
   for (let split of splitData.splits) document.getElementById('splits').appendChild(createSplit(split));
   splits = document.getElementsByClassName('split');
@@ -175,11 +194,6 @@ async function readSplit(file) {
 
   if (valid) {
     splitData = JSON.parse(data);
-    console.log(splitData);
-    $('#title').html(splitData.game);
-    $('#category').html(splitData.category);
-    time = new Time();
-    $('#time').html(time.toString(true));
     updateSplits();
   } else {
     $('#container').append(`<div class="error">Unable to load split</div>`);
@@ -195,8 +209,13 @@ async function readSplit(file) {
 
 function split() {
   if (!splitData) return;
-  if (!running) running = true;
-  else {
+  if (!running) {
+    running = true;
+    time = new Time();
+    times = [];
+    for (let split of splits) split.children[1].className = 'time';
+    $('#time').attr('class', '');
+  } else {
     if (segTime.compare(new Time(splitData.splits[curSplit].best)) < 0 || splitData.splits[curSplit].best <= 0) {
       splitData.splits[curSplit].best = segTime.toMsecs();
       splits[curSplit].children[1].className = 'time gold';
@@ -207,14 +226,25 @@ function split() {
   }
   if (curSplit >= splits.length) {
     running = false;
-    if (time.compare(new Time(splitData.splits[curSplit - 1].pb)) < 0) {
+    if (time.compare(new Time(splitData.splits[curSplit - 1].pb)) < 0 || splitData.splits[curSplit - 1].pb == 0) {
       for (let i = 0; i < splitData.splits.length; i++) splitData.splits[i].pb = times[i];
       $('#time').toggleClass('blue');
     }
+    curSplit = 0;
   }
 }
 
 $(document).ready(() => {
+  updateSplits();
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+    $(document).on('click', (event) => {
+      if (event.target.localName != 'button') split();
+    });
+  } else {
+    $(document).on('keydown', (event) => {
+      if (event.keyCode == 32) split();
+    });
+  }
   window.setInterval(() => {
     if (running) {
       time.increment(21);
@@ -230,15 +260,7 @@ $(document).ready(() => {
       $('#sb').html(sum.toString(false));
     }
   }, 21);
-  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-    $(document).on('click', (event) => {
-      if (event.target.localName != 'button') split();
-    });
-  } else {
-    $(document).on('keydown', (event) => {
-      if (event.keyCode == 32) split();
-    });
-  }
+
   $('#file-loader').on('change', (event) => {
     readSplit(event.target.files[0]);
   });
@@ -247,10 +269,22 @@ $(document).ready(() => {
   });
   $('#download').on('click', (event) => {
     if (splitData) {
+      splitData.game = $('#title .msg-target').html();
+      splitData.category = $('#category .msg-target').html();
+      for (let i = 0; i < splitData.splits.length; i++) {
+        splitData.splits[i].name = splits[i].children[0].children[0].children[0].innerHTML;
+      }
       download('split.json', JSON.stringify(splitData));
     }
   });
   $('#container').on('click', '.error', (event) => {
     $(event.target).fadeOut('fast');
+  });
+  $('.fa-pencil-alt').on('click', (event) => {
+    console.log(event);
+    $(event.target.parentElement.children[0]).attr('contenteditable', (index, attr) => {
+      console.log(attr);
+      return attr != 'true' ? 'true' : 'false';
+    });
   });
 });

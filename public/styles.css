@@ -16,7 +16,7 @@ body {
   font-size: 1.5rem;
   outline: none;
   border: none;
-  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(228,228,228,1) 17%, rgba(255,255,255,1) 100%);
+  background:
 }
 
 .error {
@@ -31,29 +31,13 @@ body {
   padding: 1rem;
 }
 
-#categories {
-  list-style: none;
-  padding-inline-start: 0;
-  margin:0;
-  float: left;
-  z-index: 2;
-
-}
-
-.category {
-  display: block;
-}
-
-.category:first-child {
-  border-top: 2px solid black;
-}
-
-.category:nth-child(even) {
-  filter: brightness(80%);
+#category {
+  padding: 0 1rem;
 }
 
 #title {
   text-align: center;
+  padding: 0 1rem;
 }
 
 #splits {
@@ -73,8 +57,10 @@ body {
   grid-template-columns: repeat(2, 1fr);
 }
 
-.split-name {
+.split-name h2 {
   margin: 0;
+  margin-right: 1rem;
+  display: inline-block;
 }
 .split-best {
   margin: 0;
@@ -114,6 +100,21 @@ body {
 
 #run-data > p {
   text-align: left;
+}
+
+.fa-pencil-alt {
+  float: right;
+}
+
+.fa-pencil-alt:hover {
+  color: #ff3d3d;
+  cursor: pointer;
+}
+
+.split-edit {
+  float: none;
+  position: relative;
+  top: -0.25rem;
 }
 
 #spinner {
